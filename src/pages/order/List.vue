@@ -1,13 +1,13 @@
 <template>
-  <div class="customer">
-    <h2>顾客管理</h2>
+  <div class="order">
+    <h2>订单管理</h2>
     <!-- 按钮 -->
     <div class="btns">
       <!-- 左侧搜索 -->
       <el-col :span="16">
         <el-form :inline="true">
           <el-form-item>
-            <el-input v-model="search.realname" placeholder="请输入姓名" clearable />
+            <el-input v-model="search.name" placeholder="请输入名称" clearable />
           </el-form-item>
           <el-form-item>
             <el-button size="small" @click="searchHandler">搜索</el-button>
@@ -23,38 +23,47 @@
       <!-- /右侧按钮 -->
     </div>
     <!-- 展示数据表格 -->
-    <el-table :data="customers" @selection-change="idsChangeHandler">
+    <el-table :data="orders" @selection-change="idsChangeHandler">
       <el-table-column type="selection" width="55" />
-      <el-table-column prop="realname" label="姓名" />
-      <el-table-column prop="telephone" label="手机号" />
-      <el-table-column prop="password" label="密码" />
+      <el-table-column prop="customerId" label="顾客编号" />
+      <el-table-column prop="waiterId" label="员工编号" />
+      <el-table-column prop="addressId" label="地址编号" />
+      <el-table-column prop="total" label="数量" />
+      <el-table-column prop="orderTime" label="时间" />
+      <el-table-column prop="remark" label="标记" />
       <el-table-column prop="status" label="状态" />
       <el-table-column label="操作" width="100px" align="center">
         <template #default="record">
           <a href="" class="el-icon-delete" @click.prevent="deleteHandler(record.row.id)" /> &nbsp;
-          <a href="" class="el-icon-edit-outline" @click.prevent="editHandler(record.row)" /> &nbsp;
-          <a href="" @click.prevent="toDetails(record.row)">详情</a>
+          <a href="" class="el-icon-warning" @click.prevent="toDetails(record.row)" />
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="所有订单" name="allOrder">所有订单</el-tab-pane>
+        <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
+        <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
+        <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
+    </el-tabs> -->
+
     <!--更新操作模态框-->
     <el-dialog :title="title" :visible.sync="visible" @close="dialogCloseHandler">
-      <el-form ref="customerForm" :model="form" :rules="rules">
-        <el-form-item label="姓名" :label-width="formLabelWidth" prop="realname">
-          <el-input v-model="form.realname" autocomplete="off" />
+      <el-form ref="orderForm" :model="form" :rules="rules">
+        <!-- <el-form-item label="顾客" :label-width="formLabelWidth" prop="customerId">
+		      <el-input v-model="form.customerId" autocomplete="off"></el-input>
+		    </el-form-item>  -->
+        <el-form-item label="顾客">
+          <el-select v-model="customersId" placeholder="顾客姓名">
+            <el-option v-for="c in customers" :key="c.id" :label="c.realname" :value="c.id" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="电话" :label-width="formLabelWidth" prop="telephone">
-          <el-input v-model="form.telephone" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
-          <el-input v-model="form.password" autocomplete="off" show-password />
-        </el-form-item>
-        <el-form-item label="状态" :label-width="formLabelWidth">
-          <el-input v-model="form.status" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="头像" :label-width="formLabelWidth">
-          <el-input v-model="form.photo" autocomplete="off" />
-        </el-form-item>
+        <!-- <el-form-item label="地址">
+                <el-select placeholder="地址信息">
+                    <el-option label="区域一" value="shanghai"></el-option>
+                    <el-option label="区域二" value="beijing"></el-option>
+                </el-select>
+            </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogCloseHandler">取 消</el-button>
@@ -81,47 +90,53 @@ export default {
     return {
       ids: [],
       form: {},
+      customersId: [],
+      activeName: 'allOrder',
       search: {
         page: 0,
-        pageSize: 8, // 每页显示几条数据
-        realname: '', // 实现查询的条件之一
-        telephone: '',
-        status: ''
-      },
+        pageSize: 9, // 每页显示几条数据
+        customerId: ''// 实现查询的条件之一
+	    },
       rules: {
-        realname: [
+        customerId: [
           { required: true, message: '请输入姓名', trigger: 'blur' },
-          { min: 2, max: 4, message: '长度在 2 到 4 个字符', trigger: 'blur' }
+          { min: 2, max: 5, message: '长度在 2 到  个字符', trigger: 'blur' }
         ],
-        telephone: [
-          { required: true, message: '请输入手机号', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 6, max: 9, message: '长度在 6 到 9 个字符', trigger: 'blur' }
+        addressId: [
+          { required: true, message: '请输入地址', trigger: 'blur' }
         ]
+
       }
     }
   },
   created() {
-    // this.findAllCustomers();
+    // this.findAllOrders();
     this.query(this.search)
   },
   computed: {
-    ...mapState('customer', ['customers', 'visible', 'title', 'queryResult', 'formLabelWidth']),
-    ...mapGetters('customer', ['countCustomers', 'customerStatusFilter'])
-    // 普通属性
-
+    ...mapState('order', ['orders', 'visible', 'title', 'queryResult', 'formLabelWidth']),
+    ...mapGetters('order', ['countOrders', 'orderStatusFilter']),
+    // 顾客的信息
+    ...mapState('customer', ['customers']),
+    // 普通信息
+    allCustomer() {
+      return customers
+    }
   },
   methods: {
-    ...mapActions('customer', ['findAllCustomers', 'deleteCustomerById', 'saveOrUpdateCustomer', 'batchDeleteCustomers', 'query']),
-    ...mapMutations('customer', ['showModal', 'closeModal', 'setTitle']),
+    ...mapActions('order', ['findAllOrders', 'deleteOrderById', 'saveOrder', 'batchDeleteOrders', 'query']),
+    ...mapMutations('order', ['showModal', 'closeModal', 'setTitle']),
+    // 初始化顾客
+    ...mapActions('customer', ['findAllCustomers']),
     // 普通方法
-    toDetails(customer) {
+    // handleClick(tab, event) {
+    //     console.log(tab, event);
+    // },
+    toDetails(order) {
       // 跳转到顾客详情页面
       this.$router.push({
-        path: '/customerDetail',
-        query: { customer }
+        path: '/orderDetail',
+        query: { order }
         // params:{id:1}
       })
     },
@@ -130,15 +145,16 @@ export default {
     },
     toAddHandler() {
       this.form = {}
-      this.setTitle('添加顾客信息')
+      this.setTitle('添加订单信息'),
+      this.findAllCustomers(), // 获得所有顾客信息
       this.showModal()
     },
     submitHandler() {
       // 1.表单验证
-      this.$refs.customerForm.validate((valid) => {
+      this.$refs.orderForm.validate((valid) => {
         if (valid) {
           // 2.提交表单
-          this.saveOrUpdateCustomer(this.form)
+          this.saveOrder(this.form)
             .then((response) => {
               this.$message({ type: 'success', message: response.statusText })
               this.query(this.search)
@@ -156,7 +172,7 @@ export default {
 	          type: 'warning'
       })
         .then(() => {
-          this.deleteCustomerById(id)
+          this.deleteOrderById(id)
             .then((response) => {
               this.$message({
                 type: 'success',
@@ -174,7 +190,7 @@ export default {
     // 监控模态框关闭
     dialogCloseHandler() {
       this.closeModal()
-      this.$refs.customerForm.resetFields()
+      this.$refs.orderForm.resetFields()
       this.form = {}
     },
     // 批量删除
@@ -185,7 +201,7 @@ export default {
 	          type: 'warning'
       })
         .then(() => {
-          this.batchDeleteCustomers(this.ids)
+          this.batchDeleteOrders(this.ids)
             .then((response) => {
               this.$message({
                 type: 'success',
