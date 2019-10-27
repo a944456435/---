@@ -1,86 +1,109 @@
 <template>
   <div class="order">
     <h2>订单管理</h2>
-    <!-- 按钮 -->
-    <div class="btns">
-      <!-- 左侧搜索 -->
-      <el-col :span="16">
-        <el-form :inline="true">
-          <el-form-item>
-            <el-input v-model="search.name" placeholder="请输入名称" clearable />
-          </el-form-item>
-          <el-form-item>
-            <el-button size="small" @click="searchHandler">搜索</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-      <!-- /左侧搜索 -->
-      <!-- 右侧按钮 -->
-      <el-col :span="8" style="text-align:right">
-        <el-button type="primary" icon="el-icon-edit" size="small" @click="toAddHandler">添加</el-button>
-        <el-button type="danger" icon="el-icon-delete" size="small" @click="batchHandler">批量删除</el-button>
-      </el-col>
-      <!-- /右侧按钮 -->
-    </div>
-    <!-- 展示数据表格 -->
-    <el-table :data="orders" @selection-change="idsChangeHandler">
-      <el-table-column type="selection" width="55" />
-      <el-table-column prop="customerId" label="顾客编号" />
-      <el-table-column prop="waiterId" label="员工编号" />
-      <el-table-column prop="addressId" label="地址编号" />
-      <el-table-column prop="total" label="数量" />
-      <el-table-column prop="orderTime" label="时间" />
-      <el-table-column prop="remark" label="标记" />
-      <el-table-column prop="status" label="状态" />
-      <el-table-column label="操作" width="100px" align="center">
-        <template #default="record">
-          <a href="" class="el-icon-delete" @click.prevent="deleteHandler(record.row.id)" /> &nbsp;
-          <a href="" class="el-icon-warning" @click.prevent="toDetails(record.row)" />
-        </template>
-      </el-table-column>
-    </el-table>
+    <!-- 二级栏目 -->
+    <!-- 所有订单 -->
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="所有订单" name="allOrder">
+            <!-- 按钮 -->
+            <div class="btns">
+              <!-- 左侧搜索 -->
+              <el-col :span="16">
+                <el-form :inline="true">
+                  <el-form-item>
+                    <el-input v-model="search.name" placeholder="请输入名称" clearable />
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button size="small" @click="searchHandler">搜索</el-button>
+                  </el-form-item>
+                </el-form>
+              </el-col>
+              <!-- /左侧搜索 -->
+              <!-- 右侧按钮 -->
+              <el-col :span="8" style="text-align:right">
+                <el-button type="primary" icon="el-icon-edit" size="small" @click="toAddHandler">添加</el-button>
+                <el-button type="danger" icon="el-icon-delete" size="small" @click="batchHandler">批量删除</el-button>
+              </el-col>
+              <!-- /右侧按钮 -->
+            </div>
+            <!-- 展示数据表格 -->
+            <el-table :data="orders" @selection-change="idsChangeHandler">
+              <el-table-column type="selection" width="55" />
+              <el-table-column prop="id" label="订单编号" />
+              <el-table-column prop="orderTime" label="下单时间" />
+              <el-table-column prop="total" label="总价" />
+              <el-table-column prop="status" label="状态" />
+              <el-table-column prop="customerId" label="顾客编号" />
+              <el-table-column label="操作" width="100px" align="center">
+                <template #default="record">
+                  <a href="" class="el-icon-delete" @click.prevent="deleteHandler(record.row.id)" /> &nbsp;
+                  <a href="" class="el-icon-warning" @click.prevent="toDetails(record.row)" />
+                </template>
+              </el-table-column>
+            </el-table>
+            <!--更新操作模态框-->
+            <el-dialog :title="title" :visible.sync="visible" @close="dialogCloseHandler">
+              <el-form ref="orderForm" :model="form" :rules="rules">
+                <!-- <el-form-item label="顾客" :label-width="formLabelWidth" prop="customerId">
+                  <el-input v-model="form.customerId" autocomplete="off"></el-input>
+                </el-form-item>  -->
+                <el-form-item label="顾客">
+                  <el-select v-model="customersId" placeholder="顾客姓名">
+                    <el-option v-for="c in customers" :key="c.id" :label="c.realname" :value="c.id" />
+                  </el-select>
+                </el-form-item>
+                <!-- <el-form-item label="地址">
+                        <el-select placeholder="地址信息">
+                            <el-option label="区域一" value="shanghai"></el-option>
+                            <el-option label="区域二" value="beijing"></el-option>
+                        </el-select>
+                    </el-form-item> -->
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogCloseHandler">取 消</el-button>
+                <el-button type="primary" @click="submitHandler(form)">确 定</el-button>
+              </div>
+            </el-dialog>
+            <!--/更新操作模态框-->
 
-    <!-- <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="所有订单" name="allOrder">所有订单</el-tab-pane>
-        <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
-        <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
-        <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
-    </el-tabs> -->
-
-    <!--更新操作模态框-->
-    <el-dialog :title="title" :visible.sync="visible" @close="dialogCloseHandler">
-      <el-form ref="orderForm" :model="form" :rules="rules">
-        <!-- <el-form-item label="顾客" :label-width="formLabelWidth" prop="customerId">
-		      <el-input v-model="form.customerId" autocomplete="off"></el-input>
-		    </el-form-item>  -->
-        <el-form-item label="顾客">
-          <el-select v-model="customersId" placeholder="顾客姓名">
-            <el-option v-for="c in customers" :key="c.id" :label="c.realname" :value="c.id" />
-          </el-select>
-        </el-form-item>
-        <!-- <el-form-item label="地址">
-                <el-select placeholder="地址信息">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                </el-select>
-            </el-form-item> -->
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogCloseHandler">取 消</el-button>
-        <el-button type="primary" @click="submitHandler(form)">确 定</el-button>
-      </div>
-    </el-dialog>
-
-    <!-- 分页 -->
-    <el-pagination
-      background
-      layout="prev, pager, next"
-      :current-page="queryResult.page+1"
-      :page-size="queryResult.pageSize"
-      :total="queryResult.total"
-      @current-change="pageChangeHandler"
-    />
-    <!--/分页 -->
+            <!-- 分页 -->
+            <el-pagination
+              background
+              layout="prev, pager, next"
+              :current-page="queryResult.page+1"
+              :page-size="queryResult.pageSize"
+              :total="queryResult.total"
+              @current-change="pageChangeHandler"
+            />
+            <!--/分页 -->
+        </el-tab-pane>
+        <!-- /所有订单 -->
+        <el-tab-pane label="待支付" name="dzf">配置管理</el-tab-pane>
+        <el-tab-pane label="待派单" name="dpd" @click="filterStatus">         
+          <!-- 展示数据表格 -->
+            <el-table :data="statusDpd" @selection-change="idsChangeHandler">
+              <el-table-column type="selection" width="55" />
+              <el-table-column prop="id" label="订单编号" />
+              <el-table-column prop="orderTime" label="下单时间" />
+              <el-table-column prop="total" label="总价" />
+              <el-table-column prop="status" label="状态" />
+              <el-table-column prop="customerId" label="顾客编号" />
+              <el-table-column label="操作" width="100px" align="center">
+                <template #default="record">
+                  <a href="" class="el-icon-delete" @click.prevent="deleteHandler(record.row.id)" /> &nbsp;
+                  <a href="" class="el-icon-warning" @click.prevent="toDetails(record.row)" />
+                </template>
+              </el-table-column>
+            </el-table>
+          <!--/ 展示数据表格 -->  
+        </el-tab-pane>
+        <el-tab-pane label="待接单" name="djd">djd</el-tab-pane>
+        <el-tab-pane label="待服务" name="dfu">dfu</el-tab-pane>
+        <el-tab-pane label="待确认" name="dqr">dqr</el-tab-pane>
+        <el-tab-pane label="已完成" name="done">done</el-tab-pane>
+    </el-tabs>
+    <!--/ 二级栏目 -->
+    
   </div>
 </template>
 <script>
@@ -112,10 +135,11 @@ export default {
   created() {
     // this.findAllOrders();
     this.query(this.search)
+    this.filterStatus();
   },
   computed: {
-    ...mapState('order', ['orders', 'visible', 'title', 'queryResult', 'formLabelWidth']),
-    ...mapGetters('order', ['countOrders', 'orderStatusFilter']),
+    ...mapState('order', ['orders', 'visible', 'title', 'queryResult', 'formLabelWidth','allOrders']),
+    ...mapGetters('order', ['countOrders', 'orderStatusFilter','statusDpd']),
     // 顾客的信息
     ...mapState('customer', ['customers']),
     // 普通信息
@@ -129,9 +153,9 @@ export default {
     // 初始化顾客
     ...mapActions('customer', ['findAllCustomers']),
     // 普通方法
-    // handleClick(tab, event) {
-    //     console.log(tab, event);
-    // },
+    handleClick(tab, event) {
+        // console.log(tab, event);
+    },
     toDetails(order) {
       // 跳转到顾客详情页面
       this.$router.push({
@@ -163,6 +187,15 @@ export default {
           return false
         }
       })
+    },
+    filterStatus(){
+      alert("执行")
+      this.findAllOrders();
+      console.log("aaa")
+      // if(orders.status=="待派单"){
+      //    status=orders.status
+      // }     
+      this.statusDpd();
     },
     // 单个删除
     async deleteHandler(id) {
@@ -205,7 +238,7 @@ export default {
             .then((response) => {
               this.$message({
                 type: 'success',
-                message: response.statusText
+                message: response.statusText 
               })
               this.query(this.search)
             })

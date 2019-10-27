@@ -4,13 +4,18 @@ export default {
   namespaced: true,
   state: {
     visible: false,
-    orders: [],
+    orders: [],//分页的订单信息
+    allOrders:[],//全部的订单信息
     queryResult: {},
     formLabelWidth: '80px',
     title: '添加订单信息'
   },
   getters: {
-
+    statusDpd(state){
+    return  state.allOrders.filter((item)=>{
+        return item.status=='待派单';
+    })
+    }
   },
   mutations: {
     showModal(state) {
@@ -29,6 +34,9 @@ export default {
       state.queryResult = queryResult
       state.orders = queryResult.list
     },
+    refreshAllOrders(state, data) {
+      state.allOrders = data
+    },
     setTitle(state, title) {
       state.title = title
     }
@@ -46,7 +54,7 @@ export default {
       const response = await get('/order/findAll')
       // alert(JSON.stringify(response));
       // 2. 将顾客信息设置到state.orders中
-      context.commit('refreshOrders', response.data)
+      context.commit('refreshAllOrders', response.data)
     },
     async deleteOrderById({ dispatch }, id) {
       // 1. 删除顾客信息
