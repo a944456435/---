@@ -78,7 +78,11 @@
             <!--/分页 -->
         </el-tab-pane>
         <!-- /所有订单 -->
-        <el-tab-pane label="待支付" name="dzf">配置管理</el-tab-pane>
+        <!-- 待支付 -->
+        <el-tab-pane label="待支付" name="dzf"> 
+           
+          </el-tab-pane>
+          <!--/ 待支付 -->
         <el-tab-pane label="待派单" name="dpd" @click="filterStatus">         
           <!-- 展示数据表格 -->
             <el-table :data="statusDpd" @selection-change="idsChangeHandler">
@@ -189,14 +193,10 @@ export default {
       })
     },
     filterStatus(){
-      alert("执行")
-      this.findAllOrders();
-      console.log("aaa")
-      // if(orders.status=="待派单"){
-      //    status=orders.status
-      // }     
-      this.statusDpd();
+      this.findAllOrders(); 
+      this.statusDpd("待派单");
     },
+
     // 单个删除
     async deleteHandler(id) {
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
