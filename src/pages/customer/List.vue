@@ -1,5 +1,5 @@
 <template>
-  <div class="customer">
+  <div class="c">
     <h2>顾客管理</h2>
     <!-- 按钮 -->
     <div class="btns">
@@ -7,7 +7,7 @@
       <el-col :span="16">
         <el-form :inline="true">
           <el-form-item>
-            <el-input v-model="search.realname" placeholder="请输入姓名" clearable />
+            <el-input v-model="keyWord" placeholder="请输入关键字" clearable />
           </el-form-item>
           <el-form-item>
             <el-button size="small" @click="searchHandler">搜索</el-button>
@@ -76,11 +76,13 @@
 </template>
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import { isNumber } from 'util'
 export default {
   data() {
     return {
       ids: [],
       form: {},
+      keyWord: '', // 关键字查询
       search: {
         page: 0,
         pageSize: 8, // 每页显示几条数据
@@ -116,11 +118,13 @@ export default {
   methods: {
     ...mapActions('customer', ['findAllCustomers', 'deleteCustomerById', 'saveOrUpdateCustomer', 'batchDeleteCustomers', 'query']),
     ...mapMutations('customer', ['showModal', 'closeModal', 'setTitle']),
+    // 映射查找该顾客的所有地址方法
+    ...mapActions('address', ['findAddressByCustomerId']),
     // 普通方法
     toDetails(customer) {
       // 跳转到顾客详情页面
       this.$router.push({
-        path: '/customerDetail',
+        path: '/customer/customerDetail',
         query: { customer }
         // params:{id:1}
       })
@@ -197,7 +201,19 @@ export default {
     },
     // 查询
     searchHandler() {
-      this.query(this.search)
+      if (/^[0-9]*[1-9][0-9]*$/.test(this.keyWord)) {
+        console.log('数字')
+        this.search.telephone = this.keyWord
+      } else if (/[\u4E00-\u9FA5]+/.test(this.keyWord)) {
+        console.log('字符')
+        this.search.realname = this.keyWord
+      } else {
+        this.search.realname = ''
+        this.search.telephone = ''
+      }
+      // this.search.realname=this.keyWord;
+
+this.query(this.search)
     },
 		 // 翻页
     pageChangeHandler(currentPage) {

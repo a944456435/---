@@ -86,7 +86,7 @@ export default {
       ids: [],
       search: {
         page: 0,
-        pageSize: 9, // 每页显示几条数据
+        pageSize: 5, // 每页显示几条数据
         name: ''// 实现查询的条件之一
       },
       rules: {

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 Vue.use(Router)
-
+import customerDetail from '../pages/customer/customerDetail'
 /* Layout */
 import Layout from '@/layout'
 
@@ -116,6 +116,19 @@ export const asyncRoutes = [
         component: () => import('@/pages/customer/List'),
         name: 'customer',
         meta: { title: '顾客管理', icon: 'edit', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/customer/list',
+    component: Layout,
+    redirect: '/customer/customerDetail',
+    children: [
+      {
+        path: '/customer/customerDetail',
+        name: 'customerDetail',
+        component: customerDetail
+        // meta: { title: '顾客详情', icon: 'edit', noCache: true }
       }
     ]
   },
