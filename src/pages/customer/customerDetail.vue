@@ -7,9 +7,6 @@
 
     <el-col>
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="所有订单" name="first">所有订单
-
-        </el-tab-pane>
         <el-tab-pane label="所有地址" name="second">所有地址
           <!--展示数据表格-->
           <el-table :data="allAddressofcustomer" style="width: 100%;">
@@ -34,6 +31,30 @@
                     </el-table-column> -->
           </el-table>
         </el-tab-pane>
+        <el-tab-pane label="所有订单" name="first">所有订单
+          <el-table  style="width: 100%;">
+            <el-table-column type="selection" width="55" />
+            <!-- <el-table-column label="编号" width="80" align="center">
+                            <template v-slot:default="scope">
+                                <input type="checkbox" :value="scope.row.id">
+                            </template>
+                        </el-table-column> -->
+            <el-table-column  label="顾客编号" align="center" />
+            <el-table-column  label="地址编号" align="center" />
+            <el-table-column  label="下单时间" align="center" />
+            <el-table-column  label="数量" align="center" />
+            <el-table-column  label="总数" align="center" />
+            <el-table-column  label="状态" align="center" />
+            <el-table-column  label="备注" align="center" />
+            <!-- <el-table-column label="操作" align="center">
+                        <template v-slot:default="scope">
+                        <el-button type="danger" icon="el-icon-delete" circle @click.prevent="deleteHandler(scope.row.id)" />
+                        <el-button type="primary" icon="el-icon-edit" circle @click.prevent="editHandler(scope.row)" />
+                        </template>
+                    </el-table-column> -->
+          </el-table>
+        </el-tab-pane>
+        
       </el-tabs>
     </el-col>
   </div>

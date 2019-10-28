@@ -11,22 +11,14 @@ export default {
     title: '添加订单信息'
   },
   getters: {
-  //  statusDpd(state){
-  //   return state.allOrders.filter(item=>{
-  //     item.status='未派单'
-  //   })
-  //  },
-    statusDpd:(state)=>{
+  statusDpd:(state)=>{
     return function(status){
-      var arr=[];
-       state.allOrders.filter((item)=>{
-        if( item.status==status){
-          arr.push(item)
-        }
-        console.log("arr",arr)
-        return arr;
-      })
-
+      if(status){
+        return state.allOrders.filter((item)=>item.status==status)
+      }else{
+          return state.allOrders;
+      }
+     
       }
     }
   },

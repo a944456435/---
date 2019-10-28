@@ -2,7 +2,7 @@
   <div class="order">
     <h2>订单管理</h2>
     <!-- 二级栏目 -->
-    <!-- 所有订单 -->代排单：{{statusDpd('待派单')}}
+    <!-- 所有订单 -->
     <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="所有订单" name="allOrder">
             <!-- 按钮 -->
@@ -79,12 +79,24 @@
         </el-tab-pane>
         <!-- /所有订单 -->
         <!-- 待支付 -->
-        <el-tab-pane label="待支付" name="dzf"> 
-           
-          </el-tab-pane>
+        <el-tab-pane label="待支付" name="dzf">         
+            <el-table :data="statusDpd('待支付')" @selection-change="idsChangeHandler">
+              <el-table-column type="selection" width="55" />
+              <el-table-column prop="id" label="订单编号" />
+              <el-table-column prop="orderTime" label="下单时间" />
+              <el-table-column prop="total" label="总价" />
+              <el-table-column prop="status" label="状态" />
+              <el-table-column prop="customerId" label="顾客编号" />
+              <el-table-column label="操作" width="100px" align="center">
+                <template #default="record">
+                  <a href="" class="el-icon-delete" @click.prevent="deleteHandler(record.row.id)" /> &nbsp;
+                  <a href="" class="el-icon-warning" @click.prevent="toDetails(record.row)" />
+                </template>
+              </el-table-column>
+            </el-table>
+        </el-tab-pane>
           <!--/ 待支付 -->
-        <el-tab-pane label="待派单">         
-          <!-- 展示数据表格 -->
+        <el-tab-pane label="待派单" name="dpd">         
             <el-table :data="statusDpd('待派单')" @selection-change="idsChangeHandler">
               <el-table-column type="selection" width="55" />
               <el-table-column prop="id" label="订单编号" />
@@ -99,12 +111,71 @@
                 </template>
               </el-table-column>
             </el-table>
-          <!--/ 展示数据表格 -->  
         </el-tab-pane>
-        <el-tab-pane label="待接单" name="djd">djd</el-tab-pane>
-        <el-tab-pane label="待服务" name="dfu">dfu</el-tab-pane>
-        <el-tab-pane label="待确认" name="dqr">dqr</el-tab-pane>
-        <el-tab-pane label="已完成" name="done">done</el-tab-pane>
+        <el-tab-pane label="待接单" name="djd">
+                <el-table :data="statusDpd('待接单')" @selection-change="idsChangeHandler">
+              <el-table-column type="selection" width="55" />
+              <el-table-column prop="id" label="订单编号" />
+              <el-table-column prop="orderTime" label="下单时间" />
+              <el-table-column prop="total" label="总价" />
+              <el-table-column prop="status" label="状态" />
+              <el-table-column prop="customerId" label="顾客编号" />
+              <el-table-column label="操作" width="100px" align="center">
+                <template #default="record">
+                  <a href="" class="el-icon-delete" @click.prevent="deleteHandler(record.row.id)" /> &nbsp;
+                  <a href="" class="el-icon-warning" @click.prevent="toDetails(record.row)" />
+                </template>
+              </el-table-column>
+            </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="待服务" name="dfu">
+              <el-table :data="statusDpd('待服务')" @selection-change="idsChangeHandler">
+              <el-table-column type="selection" width="55" />
+              <el-table-column prop="id" label="订单编号" />
+              <el-table-column prop="orderTime" label="下单时间" />
+              <el-table-column prop="total" label="总价" />
+              <el-table-column prop="status" label="状态" />
+              <el-table-column prop="customerId" label="顾客编号" />
+              <el-table-column label="操作" width="100px" align="center">
+                <template #default="record">
+                  <a href="" class="el-icon-delete" @click.prevent="deleteHandler(record.row.id)" /> &nbsp;
+                  <a href="" class="el-icon-warning" @click.prevent="toDetails(record.row)" />
+                </template>
+              </el-table-column>
+            </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="待确认" name="dqr">
+              <el-table :data="statusDpd('待确认')" @selection-change="idsChangeHandler">
+              <el-table-column type="selection" width="55" />
+              <el-table-column prop="id" label="订单编号" />
+              <el-table-column prop="orderTime" label="下单时间" />
+              <el-table-column prop="total" label="总价" />
+              <el-table-column prop="status" label="状态" />
+              <el-table-column prop="customerId" label="顾客编号" />
+              <el-table-column label="操作" width="100px" align="center">
+                <template #default="record">
+                  <a href="" class="el-icon-delete" @click.prevent="deleteHandler(record.row.id)" /> &nbsp;
+                  <a href="" class="el-icon-warning" @click.prevent="toDetails(record.row)" />
+                </template>
+              </el-table-column>
+            </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="已完成" name="done">
+              <el-table :data="statusDpd('已完成')" @selection-change="idsChangeHandler">
+              <el-table-column type="selection" width="55" />
+              <el-table-column prop="id" label="订单编号" />
+              <el-table-column prop="orderTime" label="下单时间" />
+              <el-table-column prop="total" label="总价" />
+              <el-table-column prop="status" label="状态" />
+              <el-table-column prop="customerId" label="顾客编号" />
+              <el-table-column label="操作" width="100px" align="center">
+                <template #default="record">
+                  <a href="" class="el-icon-delete" @click.prevent="deleteHandler(record.row.id)" /> &nbsp;
+                  <a href="" class="el-icon-warning" @click.prevent="toDetails(record.row)" />
+                </template>
+              </el-table-column>
+            </el-table>
+        </el-tab-pane>
     </el-tabs>
     <!--/ 二级栏目 -->
     
