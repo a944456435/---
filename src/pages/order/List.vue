@@ -2,7 +2,7 @@
   <div class="order">
     <h2>订单管理</h2>
     <!-- 二级栏目 -->
-    <!-- 所有订单 -->
+    <!-- 所有订单 -->代排单：{{statusDpd('待派单')}}
     <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="所有订单" name="allOrder">
             <!-- 按钮 -->
@@ -83,9 +83,9 @@
            
           </el-tab-pane>
           <!--/ 待支付 -->
-        <el-tab-pane label="待派单" name="dpd" @click="filterStatus">         
+        <el-tab-pane label="待派单">         
           <!-- 展示数据表格 -->
-            <el-table :data="statusDpd" @selection-change="idsChangeHandler">
+            <el-table :data="statusDpd('待派单')" @selection-change="idsChangeHandler">
               <el-table-column type="selection" width="55" />
               <el-table-column prop="id" label="订单编号" />
               <el-table-column prop="orderTime" label="下单时间" />
@@ -137,19 +137,19 @@ export default {
     }
   },
   created() {
-    // this.findAllOrders();
+    this.findAllOrders();
     this.query(this.search)
-    this.filterStatus();
   },
   computed: {
     ...mapState('order', ['orders', 'visible', 'title', 'queryResult', 'formLabelWidth','allOrders']),
-    ...mapGetters('order', ['countOrders', 'orderStatusFilter','statusDpd']),
+    ...mapGetters('order', ['statusDpd']),
     // 顾客的信息
     ...mapState('customer', ['customers']),
     // 普通信息
     allCustomer() {
       return customers
-    }
+    },
+
   },
   methods: {
     ...mapActions('order', ['findAllOrders', 'deleteOrderById', 'saveOrder', 'batchDeleteOrders', 'query']),
@@ -193,8 +193,8 @@ export default {
       })
     },
     filterStatus(){
-      this.findAllOrders(); 
-      this.statusDpd("待派单");
+      //this.findAllOrders(); 
+      //this.statusDpd("待派单");
     },
 
     // 单个删除

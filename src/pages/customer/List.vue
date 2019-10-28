@@ -213,7 +213,7 @@ export default {
       }
       // this.search.realname=this.keyWord;
 
-this.query(this.search)
+      this.query(this.search)
     },
 		 // 翻页
     pageChangeHandler(currentPage) {

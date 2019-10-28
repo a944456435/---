@@ -16,10 +16,15 @@ export default {
   //     item.status='未派单'
   //   })
   //  },
-    statusDpd(state){
-    return (status)=>{
-      return state.allOrders.filter(item=>{
-        return item.status===status;
+    statusDpd:(state)=>{
+    return function(status){
+      var arr=[];
+       state.allOrders.filter((item)=>{
+        if( item.status==status){
+          arr.push(item)
+        }
+        console.log("arr",arr)
+        return arr;
       })
 
       }
@@ -86,6 +91,11 @@ export default {
     async query({ commit, dispatch }, search) {
       const response = await post('/order/queryPage', search)
       commit('refreQuery', response.data)
+    },
+    //查询订单信息，返回列表数据
+    async queryBasic({commit,dispath},customerId){
+      const response=await get('/order/queryBasic',{customerId})
+      commit("refreshQueryBasic",response.data)
     }
   }
 }

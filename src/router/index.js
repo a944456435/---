@@ -171,19 +171,19 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/address',
-    component: Layout,
-    redirect: '/address/list',
-    children: [
-      {
-        path: 'list',
-        component: () => import('@/pages/address/List'),
-        name: 'category',
-        meta: { title: '地址管理', icon: 'edit', noCache: true }
-      }
-    ]
-  },
+  // {
+  //   path: '/address',
+  //   component: Layout,
+  //   redirect: '/address/list',
+  //   children: [
+  //     {
+  //       path: 'list',
+  //       component: () => import('@/pages/address/List'),
+  //       name: 'category',
+  //       meta: { title: '地址管理', icon: 'edit', noCache: true }
+  //     }
+  //   ]
+  // },
   {
     path: '/waiter',
     component: Layout,
@@ -198,19 +198,19 @@ export const asyncRoutes = [
     ]
   },
 
-  {
-    path: '/comment',
-    component: Layout,
-    redirect: '/comment/list',
-    children: [
-      {
-        path: 'list',
-        component: () => import('@/pages/comment/List'),
-        name: 'category',
-        meta: { title: '评论管理', icon: 'edit', noCache: true }
-      }
-    ]
-  },
+  // {
+  //   path: '/comment',
+  //   component: Layout,
+  //   redirect: '/comment/list',
+  //   children: [
+  //     {
+  //       path: 'list',
+  //       component: () => import('@/pages/comment/List'),
+  //       name: 'category',
+  //       meta: { title: '评论管理', icon: 'edit', noCache: true }
+  //     }
+  //   ]
+  // },
   /*
   {
     path: '/permission',
