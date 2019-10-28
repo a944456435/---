@@ -38,7 +38,7 @@
       </el-table-column>
     </el-table>
     <!--更新操作模态框-->
-    <el-dialog :title="title" :visible.sync="visible" @close="dialogCloseHandler">
+    <el-dialog :title="title" :visible="visible" @close="dialogCloseHandler">
       <el-form ref="customerForm" :model="form" :rules="rules">
         <el-form-item label="姓名" :label-width="formLabelWidth" prop="realname">
           <el-input v-model="form.realname" autocomplete="off" />

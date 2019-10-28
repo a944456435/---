@@ -42,7 +42,7 @@
               </el-table-column>
             </el-table>
             <!--更新操作模态框-->
-            <el-dialog :title="title" :visible.sync="visible" @close="dialogCloseHandler">
+            <el-dialog :title="title" :visible="visible" @close="dialogCloseHandler">
               <el-form ref="orderForm" :model="form" :rules="rules">
                 <!-- <el-form-item label="顾客" :label-width="formLabelWidth" prop="customerId">
                   <el-input v-model="form.customerId" autocomplete="off"></el-input>
